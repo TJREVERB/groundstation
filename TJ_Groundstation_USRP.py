@@ -161,7 +161,7 @@ while (1==1):
                         getTime()
                         arg = input('UI: Which arg for arg type: ' + str(submodules[keyin1][keyin2][i]) + "\n")
                         argsList.append(arg)
-                checksum = generate_checksum('TJ' + keyin2 + '_' + argsList[0])
+                checksum = generate_checksum('TJ' + keyin2 + '_' + printArg(argsList))
                 msg = ('TJ' + keyin2 + '_'  + printArg(argsList)+checksum)
                 getTime()
                 print (msg)
