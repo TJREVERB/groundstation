@@ -42,7 +42,6 @@ submodules = {
         'imu': '',
         'serial': '',
         'aprs': aprs,
-        'eeprom': '',
         'init': '',
         'sys': '',
         'eps': eps,
@@ -150,13 +149,13 @@ def send():
     get_time()
     print("TJREVERB Groundstation")
     # PRINT SUBMODULES METHOD
-    submoduleCheck = 0
-    methodCheck = 0
+    #submoduleCheck = 0
+    #methodCheck = 0
     floatCheck = 0
     argsList = []
     keyin1 = in_module()
     #if (keyin1 in submodules):  # make sure that keyin1 is in submodule
-    submoduleCheck = 1  # if it is in, make check to 1
+    #submoduleCheck = 1  # if it is in, make check to 1
     #while (methodCheck == 0):  # keep on going until valid method
         # print(submodules[keyin1])
     print_Methods(keyin1)
@@ -186,7 +185,7 @@ def send():
         elif(submodules[keyin1][keyin2][i] == 'char'):
             get_time
             arg = input("UI: Which arg for arg type: char\n")
-            while(arg.isalpha() == False):
+            while(arg.isalpha() == False or len(arg) >1):
                 arg = input("UI: Which arg for arg type: char\n")
             argsList.append(arg)
         else:  # assumes string arg
@@ -202,10 +201,10 @@ def send():
     if (confirm == 'y'):
         msg_snd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         msg_snd.sendto(msg.encode(), (udp_ip, tx_port))
-        transmit_txt = open("transmit.txt", "w")
-        transmit_txt.truncate(0)
-        transmit_txt.write(msg)
-        transmit_txt.close()
+        #transmit_txt = open("transmit.txt", "w")
+        #transmit_txt.truncate(0)
+        #transmit_txt.write(msg)
+        #transmit_txt.close()
         get_time()
         print('Message sent')
     '''else:
