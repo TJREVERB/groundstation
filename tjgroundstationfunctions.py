@@ -4,7 +4,13 @@ import time
 # import sys
 import socket
 import datetime
-
+'''
+SEND MESSAGE:
+in_module
+in_method
+check_args
+send
+'''
 # import subprocess
 
 tx_port = 5555
@@ -154,6 +160,9 @@ def check_char(charVal):
     if(charVal.isalpha() == True and len(charVal) <=1):
         return(True)
     return False
+
+def arg_length(module, method):
+    return(len(submodules[module][method]))
 
 def check_args(module, method, argList):
     argumentlist = submodules[module][method]
