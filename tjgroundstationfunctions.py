@@ -5,12 +5,12 @@ import time
 import socket
 import datetime
 '''
-SEND MESSAGE:
-in_module
-in_method
-check_args
-send
-'''
+    SEND MESSAGE:
+    in_module
+    in_method
+    check_args
+    send
+    '''
 # import subprocess
 
 tx_port = 5555
@@ -64,7 +64,7 @@ submodules = {
 def get_time():  # get_time()
     ts = time.time()
     st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-    print(st, end=" ")
+    return(st)
 
 
 def get_logger():
@@ -96,9 +96,9 @@ def generate_checksum(body: str):
 def listen():
     #def listen_loop():
     ack3 = None
-    listen_txt = open('listen.txt', 'w')
-    listen_txt.truncate(0)
-    listen_txt.close()
+    #listen_txt = open('listen.txt', 'w')
+    #listen_txt.truncate(0)
+    #listen_txt.close()
     while (1 == 1):
         # ack, addr = msg_lstn.recvfrom(1024)
         listen_txt = open('listen.txt', 'r')
@@ -195,6 +195,10 @@ def check_args(module, method, argList):
         else:
             count += 1
     return(True)
+def get_message(module, method, argList):
+    checksum = generate_checksum('TJ' + module + ',' + method + ',' + print_arg(argList))
+    msg = "TJ" + module + "," + method + "," + print_arg(argList) + checksum
+    return(msg)
 
 def send(module, method, argList):#ASSUMES EVERYTHING HAS BEEN CHECKED
     checksum = generate_checksum('TJ' + module + ',' + method + ',' + print_arg(argList))
