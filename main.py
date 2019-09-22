@@ -32,9 +32,6 @@ def return_template(errors, enterStr, module, method, args, messageStr):
                 <p><input name="number1" /></p>
                 <p><input type="submit" value="Check" /></p>
                 </form>
-                <p>Module: {module}</p>
-                <p>Method: {method}</p>
-                <p>Arg List: {args}</p>
                 </body>
                 </html>
                 '''.format(errors=errors, enterStr = enterStr, module = module, method = method, args = args, messageStr = messageStr)
