@@ -44,21 +44,21 @@ telemetry = {
 
 submodules = {
     'adcs': '',
-        'eeprom': '',
-        'imu': '',
-        'serial': '',
-        'aprs': aprs,
-        'init': '',
-        'sys': '',
-        'eps': eps,
-        'iridium': '',
-        'telemetry': telemetry,
-        'gps': gps,
-        'radio_output': '',
-        'time': '',
-        'command_ingest': '',
-        'housekeeping': '',
-        '_init_': _init_
+    'eeprom': '',
+    'imu': '',
+    'serial': '',
+    'aprs': aprs,
+    'init': '',
+    'sys': '',
+    'eps': eps,
+    'iridium': '',
+    'telemetry': telemetry,
+    'gps': gps,
+    'radio_output': '',
+    'time': '',
+    'command_ingest': '',
+    'housekeeping': '',
+    '_init_': _init_
 }
 
 def get_time():  # get_time()
@@ -125,9 +125,12 @@ def in_module(module):
     return False
 
 def print_Methods(submodule):
-    print("Methods: ")
-    for i in submodules[submodule]:
+    methods = "<font color=green></br>"
+    for i in submodules[submodule].keys():
         print(i)
+        methods += i + "</br>"
+    methods += "</font>"
+    return(methods)
 
 def in_method(submod, method):
     '''method = input("UI: Which method?\n")
@@ -164,6 +167,12 @@ def check_char(charVal):
 def arg_length(module, method):
     return(len(submodules[module][method]))
 
+def get_arg(module, method):
+    argStr = "<font color=green></br>Args: ["
+    for i in (submodules[module][method]):
+        argStr += i + ", "
+    argStr += "]<font>"
+    return(argStr)
 def check_args(module, method, argList):
     argumentlist = submodules[module][method]
     if(len(argumentlist) != len(argList)):
@@ -206,6 +215,8 @@ def send(module, method, argList):#ASSUMES EVERYTHING HAS BEEN CHECKED
     msg_snd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     msg_snd.sendto(msg.encode(), (udp_ip, tx_port))
     print(msg, "Message sent")
+
+#print(get_arg("gps", "findnth"))
 #def send():
 #print("hi")
 # get_time()
