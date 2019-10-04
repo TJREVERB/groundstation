@@ -108,11 +108,12 @@ def listen():
         #getTime()
         print ("RX: ", end="")
         print (ack)
+        return(str(ack))
         #listen_txt = open("listen.txt","w")
         #listen_txt.truncate(0)
         #listen_txt.write(str(ack))
         #listen_txt.close()
-        ack = None
+        #ack = None
 
 Thread(target=listen, daemon=True).start()
 
