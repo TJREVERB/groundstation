@@ -96,23 +96,23 @@ def generate_checksum(body: str):
 
 
 def listen():
-    # def listen_loop():
-    ack3 = None
-    # listen_txt = open('listen.txt', 'w')
-    # listen_txt.truncate(0)
-    # listen_txt.close()
-    while (1 == 1):
-        # ack, addr = msg_lstn.recvfrom(1024)
-        listen_txt = open('listen.txt', 'r')
-        ack2 = listen_txt.read()
-        listen_txt.close()
-        if (ack2 != None and ack2 != ack3):
-            print("RX: ", end="")
-            print(ack2)
-            # subprocess.call(['curl', '-X', 'POST', '-H', "Content-type: application/json", '--data', '{"text":%s}' % ('"%s"' % ack2), 'https://hooks.slack.com/services/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'])
-            ack3 = ack2
-            ack2 = None
-
+    UDP_IP = "127.0.0.1"
+    RX_PORT = 5557
+    msg_lstn = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
+    msg_lstn.bind((UDP_IP, RX_PORT))
+    ack, addr = msg_lstn.recvfrom(1024)
+    #print (ack)
+    time.sleep(1)
+    #if redundancyCheck() == False:
+    if "to SATT4" in str(ack):
+        #getTime()
+        print ("RX: ", end="")
+        print (ack)
+        #listen_txt = open("listen.txt","w")
+        #listen_txt.truncate(0)
+        #listen_txt.write(str(ack))
+        #listen_txt.close()
+        ack = None
 
 Thread(target=listen, daemon=True).start()
 
