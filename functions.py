@@ -4,7 +4,7 @@ import time
 # import sys
 import socket
 import datetime
-
+messageList = []
 '''
     SEND MESSAGE:
     in_module
@@ -94,8 +94,17 @@ def generate_checksum(body: str):
     logger.debug('CHECKOUT :' + chr(sum1) + ";")
     return chr(sum1)
 
+def listen_list():
+    print(messageList[-1])
+    return messageList[-1]#returns last item
+
+def start_listen():
+    t1 = Thread(target = listen, args = ())
+    t1.daemon = True
+    t1.start()
 
 def listen():
+    global messageList
     UDP_IP = "127.0.0.1"
     RX_PORT = 5557
     msg_lstn = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
@@ -108,14 +117,17 @@ def listen():
         #getTime()
         print ("RX: ", end="")
         print (ack)
+        messageList.append(ack)
         return(str(ack))
+    else:
+        return None
         #listen_txt = open("listen.txt","w")
         #listen_txt.truncate(0)
         #listen_txt.write(str(ack))
         #listen_txt.close()
         #ack = None
 
-Thread(target=listen, daemon=True).start()
+#Thread(target=listen, daemon=True).start()
 
 
 def in_module(module):
@@ -234,3 +246,5 @@ def send(module, method, argList):  # ASSUMES EVERYTHING HAS BEEN CHECKED
     msg_snd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     msg_snd.sendto(msg.encode(), (udp_ip, tx_port))
     print(msg, "Message sent")
+
+#listen_list()
