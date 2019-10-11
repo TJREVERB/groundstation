@@ -113,18 +113,18 @@ def listen():
     #print (ack)
     time.sleep(1)
     #if redundancyCheck() == False:
-    '''if "to SATT4" in str(ack):
+    if "to SATT4" in str(ack):
         #getTime()
         print ("RX: ", end="")
         print (ack)
         messageList.append(ack)
         return(str(ack))
     else:
-        return None'''
-    print ("RX: ", end="")
+        return None
+    '''print ("RX: ", end="")
     print (ack)
     messageList.append(ack)
-    return(str(ack))
+    return(str(ack))'''
         #listen_txt = open("listen.txt","w")
         #listen_txt.truncate(0)
         #listen_txt.write(str(ack))
