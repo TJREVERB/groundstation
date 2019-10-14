@@ -95,13 +95,19 @@ def generate_checksum(body: str):
     return chr(sum1)
 
 def listen_list():
-    print(messageList[-1])
-    return messageList[-1]#returns last item
+    if(len(messageList) > 0):
+        print(messageList[-1])
+        return messageList[-1]#returns last item
+    else:
+        return("No message")
 
 def start_listen():
     t1 = Thread(target = listen, args = ())
     t1.daemon = True
     t1.start()
+    '''t2 = Thread(target=get_listen_message, args = ())
+    t2.daemon = True
+    t2.start()'''
 
 def listen():
     global messageList
@@ -118,18 +124,47 @@ def listen():
         print ("RX: ", end="")
         print (ack)
         messageList.append(ack)
+        #return(str(ack))
+def listen_test():
+    global messageList
+    global message
+    message = ""
+    message = input("Enter message")
+    messageList.append(message)
+    '''if(message != ""):
+        messageList.append(message)
+        return(message)
+    else:
+        return None'''
+    '''
+    UDP_IP = "127.0.0.1"
+    RX_PORT = 5557
+    msg_lstn = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
+    msg_lstn.bind((UDP_IP, RX_PORT))
+    ack, addr = msg_lstn.recvfrom(1024)
+    #print (ack)
+    time.sleep(1)
+    #if redundancyCheck() == False:
+    if "to SATT4" in str(ack):
+        #getTime()
+        print ("RX: ", end="")
+        print (ack)
+        messageList.append(ack)
         return(str(ack))
     else:
-        return None
-    '''print ("RX: ", end="")
-    print (ack)
-    messageList.append(ack)
-    return(str(ack))'''
+        return None'''
         #listen_txt = open("listen.txt","w")
         #listen_txt.truncate(0)
         #listen_txt.write(str(ack))
         #listen_txt.close()
         #ack = None
+
+def get_listen_message():
+    print(message)
+    if(message != ""):
+        return message
+    else:
+        return "No message"
 
 #Thread(target=listen, daemon=True).start()
 

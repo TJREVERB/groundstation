@@ -12,23 +12,21 @@ def handle_send():
         functions.send(module, method, args)
     else:
         print("yes")#test 
-    #functions.send("aprs", "aprs_echo", ["test"])
-    #return "function executed sucessfully"
 
-@app.route("/", methods=["GET"])
-def home_page():
-    functions.send("aprs", "aprs_echo", ["test"])
-    return "function executed sucessfully"
 @app.route("/listen", methods = ['GET'])
 def listen():
-    global message
+    '''global message
     print("Started listen thread")
-    print("message recieved")
-    if(functions.messageList == []):
+    functions.start_listen()
+    print("message recieved")'''
+    functions.start_listen()
+    return functions.listen_list()
+    '''if(functions.messageList == []):
         return("No message found")
     else:
         print(functions.messageList[-1])
-        return(functions.messageList[-1])
+        return(functions.messageList[-1])'''
+
     '''global message
     while True:
         messageStr = functions.listen()
@@ -62,5 +60,5 @@ if __name__ == '__main__':
     '''t1 = Thread(target = listen_thread, args = ())
     t1.daemon = True
     t1.start()'''
-    functions.start_listen()
+    #functions.start_listen()
     app.run()
