@@ -129,6 +129,7 @@ def listen():
         return None'''
     #print ("RX: " + get_time(), end="")
     #print (ack)
+    print(ack)
     messageList.append(ack)
     print(str(len(messageList)) + " Is the len")
     #return(str(ack))
