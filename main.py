@@ -9,16 +9,25 @@ def handle_send():
     module, method, args = request.json["module"], request.json["method"], request.json["args"]
     print(module, method, args)
     if(functions.in_module(module) and functions.in_method(module, method) and functions.check_args(module, method, args)):
-        functions.send(module, method, args)
+        result = functions.send(module, method, args)
+        if result:
+            return "message successfully sent", 200
+        else:
+            return "error in sending message", 500
     else:
-        print("yes")#test 
+        return "incorrect parameters", 405
 
+@app.route("/", methods = ['GET'])
+def send():
+    functions.send("aprs", "aprs_echo", ["hello"])
+    return "Function sent"
 @app.route("/listen", methods = ['GET'])
 def listen():
     '''global message
     print("Started listen thread")
     functions.start_listen()
     print("message recieved")'''
+    print(functions.start_listen())
     functions.start_listen()
     return functions.listen_list()
     '''if(functions.messageList == []):

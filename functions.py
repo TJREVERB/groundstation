@@ -119,12 +119,25 @@ def listen():
     #print (ack)
     time.sleep(1)
     #if redundancyCheck() == False:
-    if "to SATT4" in str(ack):
+    '''if "to SATT4" in str(ack):
         #getTime()
         print ("RX: ", end="")
         print (ack)
         messageList.append(ack)
-        #return(str(ack))
+        return(str(ack))
+    else:
+        return None'''
+    #print ("RX: " + get_time(), end="")
+    #print (ack)
+    messageList.append(ack)
+    print(str(len(messageList)) + " Is the len")
+    #return(str(ack))
+        #listen_txt = open("listen.txt","w")
+        #listen_txt.truncate(0)
+        #listen_txt.write(str(ack))
+        #listen_txt.close()
+        #ack = None
+
 def listen_test():
     global messageList
     global message
@@ -282,8 +295,11 @@ def get_message(module, method, argList):
 def send(module, method, argList):  # ASSUMES EVERYTHING HAS BEEN CHECKED
     checksum = generate_checksum('TJ' + module + ',' + method + ',' + print_arg(argList))
     msg = "TJ" + module + "," + method + "," + print_arg(argList) + checksum
-    msg_snd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    msg_snd.sendto(msg.encode(), (udp_ip, tx_port))
-    print(msg, "Message sent")
+    try:  # Message successfully sent
+        msg_snd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        msg_snd.sendto(msg.encode(), (udp_ip, tx_port))
 
+        return True
+    except:
+        return False
 #listen_list()
