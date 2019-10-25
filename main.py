@@ -27,9 +27,11 @@ def listen():
     print("Started listen thread")
     functions.start_listen()
     print("message recieved")'''
-    print(functions.start_listen())
-    functions.start_listen()
-    return functions.listen_list()
+    #print(functions.start_listen())
+    #unctions.start_listen()
+    listen_list = myobject.get_list()
+    myobject.reset_list()
+    return jsonify(listen_list)
     '''if(functions.messageList == []):
         return("No message found")
     else:
@@ -69,5 +71,9 @@ if __name__ == '__main__':
     '''t1 = Thread(target = listen_thread, args = ())
     t1.daemon = True
     t1.start()'''
-    #functions.start_listen()
+    myobject = functions.listen_class([])
+    myobject.start_listen()
+    '''functions.start_listen()
+    print(functions.get_time(), "yes")
+    print("done")'''
     app.run()

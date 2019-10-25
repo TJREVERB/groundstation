@@ -94,7 +94,45 @@ def generate_checksum(body: str):
     logger.debug('CHECKOUT :' + chr(sum1) + ";")
     return chr(sum1)
 
-def listen_list():
+class listen_class:
+    def __init__(self, listenList):
+        self.messageList = listenList
+        #self.messageList.append(messageList)
+    def get_list(self):
+        return self.messageList
+    def reset_list(self):
+        self.messageList = []
+    def start_listen(self):
+        t1 = Thread(target = self.listen, args = ())
+        t1.daemon = True
+        t1.start()
+    def listen_test(self):#FOR TESTING
+        while True:
+            message = input("What is your message?")
+            self.messageList.append(message)
+            print(self.messageList)
+    def listen(self):
+        UDP_IP = "127.0.0.1"
+        RX_PORT = 5557
+        while True:
+            msg_lstn = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
+            msg_lstn.bind((UDP_IP, RX_PORT))
+            ack, addr = msg_lstn.recvfrom(1024)
+            #print (ack)
+            time.sleep(1)
+            #REDUDANCY CHECK
+            if "to SATT4" in str(ack):
+                #getTime()
+                print ("RX: ", end="")
+                print (ack)
+                self.messageList.append(ack)
+                #return(str(ack))
+            #print ("RX: " + get_time(), end="")
+            #print (ack)
+            #print(ack)
+            #self.messageList.append(ack)
+
+'''def listen_list():
     if(len(messageList) > 0):
         print(messageList[-1])
         return messageList[-1]#returns last item
@@ -105,9 +143,9 @@ def start_listen():
     t1 = Thread(target = listen, args = ())
     t1.daemon = True
     t1.start()
-    '''t2 = Thread(target=get_listen_message, args = ())
+    t2 = Thread(target=get_listen_message, args = ())
     t2.daemon = True
-    t2.start()'''
+    t2.start()
 
 def listen():
     global messageList
@@ -119,14 +157,14 @@ def listen():
     #print (ack)
     time.sleep(1)
     #if redundancyCheck() == False:
-    '''if "to SATT4" in str(ack):
+    if "to SATT4" in str(ack):
         #getTime()
         print ("RX: ", end="")
         print (ack)
         messageList.append(ack)
         return(str(ack))
     else:
-        return None'''
+        return None
     #print ("RX: " + get_time(), end="")
     #print (ack)
     print(ack)
@@ -145,12 +183,12 @@ def listen_test():
     message = ""
     message = input("Enter message")
     messageList.append(message)
-    '''if(message != ""):
+    if(message != ""):
         messageList.append(message)
         return(message)
     else:
-        return None'''
-    '''
+        return None
+    
     UDP_IP = "127.0.0.1"
     RX_PORT = 5557
     msg_lstn = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
@@ -166,7 +204,7 @@ def listen_test():
         messageList.append(ack)
         return(str(ack))
     else:
-        return None'''
+        return None
         #listen_txt = open("listen.txt","w")
         #listen_txt.truncate(0)
         #listen_txt.write(str(ack))
@@ -181,7 +219,7 @@ def get_listen_message():
         return "No message"
 
 #Thread(target=listen, daemon=True).start()
-
+'''
 
 def in_module(module):
     # get_time()
