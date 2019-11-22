@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from threading import Thread
 import functions
 
@@ -17,18 +17,20 @@ def handle_send():
     else:
         return "incorrect parameters", 405
 
-@app.route("/", methods = ['GET'])
+
+@app.route("/")
 def send():
-    functions.send("aprs", "aprs_echo", ["hello"])
-    return "Function sent"
-@app.route("/listen", methods = ['GET'])
+    return render_template("index.html")
+
+
+@app.route("/listen", methods=['GET'])
 def listen():
     '''global message
     print("Started listen thread")
     functions.start_listen()
     print("message recieved")'''
-    #print(functions.start_listen())
-    #unctions.start_listen()
+    # print(functions.start_listen())
+    # unctions.start_listen()
     listen_list = myobject.get_list()
     myobject.reset_list()
     return jsonify(listen_list)
@@ -48,9 +50,10 @@ def listen():
     '''listenMessage = functions.listen()
     print(listenMessage)
     return(listenMessage)'''
+
     # global message
     # return message[-1]
-    #functions.list
+    # functions.list
 '''
 def listen_thread():
     global message
