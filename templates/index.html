@@ -1,63 +1,95 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Front-end</title>
-        <style>
-            body {
-                margin: 0;
-                padding: 10px;
-            }
-            body,
-            input {
-                font-family: 'Barlow';
-                font-size: 16px;
-            }
-            input[type='text'] {
-                margin-left: 15px;
-                margin-bottom: 15px;
-            }
-            button {
-                margin-top: 20px;
-                font-family: 'Barlow';
-                font-size: 16px;
-            }
-        </style>
-        <link href="https://fonts.googleapis.com/css?family=Barlow&display=swap" rel="stylesheet" />
-    </head>
-    <body>
-        <form id="form">
-            <label for="module">Module:</label><input type="text" name="module" /><br />
-            <label for="method">Method:</label><input type="text" name="method" /><br />
-            <label for="args">Arguments:</label><input type="text" name="args" /><br />
-        </form>
-        <button onclick="submit()">Submit</button>
-        <script>
-            function submit() {
-                let form = new FormData(document.getElementById('form'));
-                const url = '/send';
 
-                var request = new Request(url, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        module: form.get('module'),
-                        method: form.get('method'),
-                        args: form.get('args').split(',')
-                    }),
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json'
-                    }
+<head>
+    <title>Front-end</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 10px;
+        }
+
+        body,
+        input {
+            font-family: 'Press Start 2P';
+            font-size: 16px;
+        }
+
+        input[type='text'] {
+            margin-left: 15px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            margin-top: 20px;
+            font-family: 'Press Start 2P';
+            font-size: 16px;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <form id="form">
+        <label for="module">Module:</label><input type="text" name="module" /><br />
+        <label for="method">Method:</label><input type="text" name="method" /><br />
+        <label for="args">Arguments:</label><input type="text" name="args" /><br />
+    </form>
+    <button onclick="submit()">Submit</button>
+    <script>
+        function submit() {
+            let form = new FormData(document.getElementById('form'));
+            const url = '/send';
+
+            var request = new Request(url, {
+                method: 'POST',
+                body: JSON.stringify({
+                    module: form.get('module'),
+                    method: form.get('method'),
+                    args: form.get('args').split(',')
+                }),
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            fetch(request)
+                .then(function (res) {
+                    // Handle response we get from the API
+                    console.log(res);
+                })
+                .catch(function (err) {
+                    console.log(err);
                 });
+        }
+    </script>
+    <p id="listen"> Listen messages</p>
+    <script>
+        function alertHi() {
+            url = "/listen";
+            fetch(url)
+                //.then(res => res.json())
+                //.then(jsonData => document.getElementById("listen").textContent = JSON.stringify(jsonData) + Math.random() * 10);
+                .then(res=>res.json())
+                .then((jsonData) => {
+                    if(JSON.stringify(jsonData) != "[]") {
+                        document.getElementById("listen").textContent = JSON.stringify(jsonData);
+                    }
+                })
+            /*fetch(url)
+                .then((jsonData) => {
+                    // Handle response we get from the API
+                    //const thing = JSON.res;
+                    document.getElementById("listen").textContent = JSON.stringify(jsonData) + Math.random() * 10;
+                    console.log(jsonData);
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });*/
+        }
+        setInterval(alertHi, 7500);
+    </script>
+</body>
 
-                fetch(request)
-                    .then(function(res) {
-                        // Handle response we get from the API
-                        console.log(res);
-                    })
-                    .catch(function(err) {
-                        console.log(err);
-                    });
-            }
-        </script>
-    </body>
 </html>

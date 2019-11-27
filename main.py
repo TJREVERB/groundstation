@@ -25,50 +25,9 @@ def send():
 
 @app.route("/listen", methods=['GET'])
 def listen():
-    '''global message
-    print("Started listen thread")
-    functions.start_listen()
-    print("message recieved")'''
-    # print(functions.start_listen())
-    # unctions.start_listen()
     listen_list = myobject.get_list()
     myobject.reset_list()
     return jsonify(listen_list)
-    '''if(functions.messageList == []):
-        return("No message found")
-    else:
-        print(functions.messageList[-1])
-        return(functions.messageList[-1])'''
-
-    '''global message
-    while True:
-        messageStr = functions.listen()
-        if messageStr is not None:
-            message.append(messageStr)'''
-
-    #Thread(target=functions.listen, daemon=True).start()
-    '''listenMessage = functions.listen()
-    print(listenMessage)
-    return(listenMessage)'''
-
-    # global message
-    # return message[-1]
-    # functions.list
-'''
-def listen_thread():
-    global message
-    print("Started listen thread")
-    return("hi")'''
-'''while True:
-        messageStr = functions.listen()
-        """
-        if messageStr is not None:
-            message.append(messageStr)
-        else:
-            message.append("nothing here")
-        """
-        message.append("test")
-        print(message)'''
 
 if __name__ == '__main__':
     '''t1 = Thread(target = listen_thread, args = ())
