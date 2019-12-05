@@ -94,43 +94,50 @@ def generate_checksum(body: str):
     logger.debug('CHECKOUT :' + chr(sum1) + ";")
     return chr(sum1)
 
+
 class listen_class:
     def __init__(self, listenList):
         self.messageList = listenList
-        #self.messageList.append(messageList)
+        # self.messageList.append(messageList)
+
     def get_list(self):
         return self.messageList
+
     def reset_list(self):
         self.messageList = []
+
     def start_listen(self):
-        t1 = Thread(target = self.listen, args = ())
+        t1 = Thread(target=self.listen_test, args=())
         t1.daemon = True
         t1.start()
-    def listen_test(self):#FOR TESTING
+
+    def listen_test(self):  # FOR TESTING
         while True:
             message = input("What is your message?")
             self.messageList.append(message)
             print(self.messageList)
+
     def listen(self):
         UDP_IP = "127.0.0.1"
         RX_PORT = 5557
         while True:
-            msg_lstn = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
+            msg_lstn = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
             msg_lstn.bind((UDP_IP, RX_PORT))
             ack, addr = msg_lstn.recvfrom(1024)
             #print (ack)
             time.sleep(1)
-            #REDUDANCY CHECK
+            # REDUDANCY CHECK
             if "to SATT4" in str(ack):
-                #getTime()
-                print ("RX: ", end="")
-                print (ack)
+                # getTime()
+                print("RX: ", end="")
+                print(ack)
                 self.messageList.append(ack)
-                #return(str(ack))
+                # return(str(ack))
             #print ("RX: " + get_time(), end="")
             #print (ack)
-            #print(ack)
-            #self.messageList.append(ack)
+            # print(ack)
+            # self.messageList.append(ack)
+
 
 '''def listen_list():
     if(len(messageList) > 0):
@@ -220,6 +227,7 @@ def get_listen_message():
 
 #Thread(target=listen, daemon=True).start()
 '''
+
 
 def in_module(module):
     # get_time()
@@ -326,13 +334,15 @@ def check_args(module, method, argList):
 
 
 def get_message(module, method, argList):
-    checksum = generate_checksum('TJ' + module + ',' + method + ',' + print_arg(argList))
+    checksum = generate_checksum(
+        'TJ' + module + ',' + method + ',' + print_arg(argList))
     msg = "TJ" + module + "," + method + "," + print_arg(argList) + checksum
     return (msg)
 
 
 def send(module, method, argList):  # ASSUMES EVERYTHING HAS BEEN CHECKED
-    checksum = generate_checksum('TJ' + module + ',' + method + ',' + print_arg(argList))
+    checksum = generate_checksum(
+        'TJ' + module + ',' + method + ',' + print_arg(argList))
     msg = "TJ" + module + "," + method + "," + print_arg(argList) + checksum
     try:  # Message successfully sent
         msg_snd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -341,4 +351,4 @@ def send(module, method, argList):  # ASSUMES EVERYTHING HAS BEEN CHECKED
         return True
     except:
         return False
-#listen_list()
+# listen_list()
