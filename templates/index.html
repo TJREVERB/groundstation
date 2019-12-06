@@ -1,65 +1,87 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Front-end</title>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
-    </head>
 
-    <body>
-        <div id="app">
-            <div id="d-send">
-                <h1>Send</h1>
-                <form id="form">
-                    <label for="module">Module:</label><input type="text" name="module" /><br />
-                    <label for="method">Method:</label><input type="text" name="method" /><br />
-                    <label for="args">Arguments:</label><input type="text" name="args" /><br />
-                </form>
-                <button onclick="send()">Submit</button>
-            </div>
-            <div id="d-listen">
-                <h1>Listen</h1>
-                <p id="t-listen"></p>
-            </div>
+<head>
+    <title>Front-end</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+
+<body>
+    <div id="app">
+        <div id="d-send">
+            <h1>Send</h1>
+            <form id="form">
+                <label for="module">Module:</label><input type="text" name="module" /><br />
+                <label for="method">Method:</label><input type="text" name="method" /><br />
+                <label for="args">Arguments:</label><input type="text" name="args" /><br />
+            </form>
+            <button onclick="send()">Submit</button>
         </div>
-        <script>
-            function listen() {
-                url = '/listen';
-                fetch(url)
-                    .then(res => res.json())
-                    .then(jsonData => {
-                        if (JSON.stringify(jsonData) != '[]') {
-                            document.getElementById('t-listen').textContent = JSON.stringify(jsonData);
-                        }
-                    });
-            }
-            setInterval(listen, 7500);
-
-            function send() {
-                let form = new FormData(document.getElementById('form'));
-                const url = '/send';
-
-                var request = new Request(url, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        module: form.get('module'),
-                        method: form.get('method'),
-                        args: form.get('args').split(',')
-                    }),
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json'
+        <div id="d-listen">
+            <h1>Listen</h1>
+            <ul id="t-listen">
+                <li>Sup</li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        function listen() {
+            url = '/listen';
+            fetch(url)
+                .then(res => res.json())
+                .then(req => {
+                    //ul.appendChild("hi"_);
+                    if (JSON.stringify(req) != '[]') {
+                        //alert("hi")
+                        var ul = document.getElementById('t-listen');
+                        var li = document.createElement("li");
+                        var jsonArray = JSON.parse(JSON.stringify(req));
+                        //console.log(jsonArray);
+                        //jsonArray.forEach(element => console.log(element));
+                        jsonArray.forEach(function(item) {
+                            li.appendChild(document.createTextNode(item) );
+                            ul.appendChild(li);
+                            li = document.createElement("li");
+                        });
+                        //jsonArray.forEach(element => li.appendChild(document.createTextNode(element + "\n")));
+                        //li.appendChild(document.createTextNode("Four"));
+                        //ul.appendChild(li);
+                        console.log("no problem");
+                        //var ul = document.getElementById('t-listen');
+                        //ul.appendChild("hi"_);
+                        //document.getElementById('t-listen').textContent = JSON.stringify(req);
                     }
                 });
+        }
+        setInterval(listen, 2500);
 
-                fetch(request)
-                    .then(function(res) {
-                        // Handle response we get from the API
-                        console.log(res);
-                    })
-                    .catch(function(err) {
-                        console.log(err);
-                    });
-            }
-        </script>
-    </body>
+        function send() {
+            let form = new FormData(document.getElementById('form'));
+            const url = '/send';
+
+            var request = new Request(url, {
+                method: 'POST',
+                body: JSON.stringify({
+                    module: form.get('module'),
+                    method: form.get('method'),
+                    args: form.get('args').split(',')
+                }),
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            fetch(request)
+                .then(function (res) {
+                    // Handle response we get from the API
+                    console.log(res);
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+        }
+    </script>
+</body>
+
 </html>
