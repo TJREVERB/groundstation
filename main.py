@@ -30,12 +30,17 @@ def send():
 @app.route("/listen", methods=['GET'])
 def listen():
     listen_list = myobject.get_list()
-    #checks if all elements of listen_list have correct checksum
-    #if an element has incorrect checksum, add it to failed_msg
+    for i in listen_list:
+        if (listen_list[i].check_checksum is not True):
+            failed_msg.append(i)
     myobject.reset_list()
     return jsonify(listen_list)
 
-#checksum method
+@app.route("/failed", methods=['GET'])
+def checksum():
+    return_list = failed_msg
+    failed_msg.clear()
+    return return_list
 #returns all elements of failed_msg
 #clears failed_msg
 if __name__ == '__main__':

@@ -101,7 +101,12 @@ def generate_checksum(body: str):
     #logger.debug('CHECKOUT :' + chr(sum1) + ";")
     return chr(sum1)
 
-
+def check_checksum (body: str):
+    body2 = body[:-1]
+    checksum = generate_checksum(body2)
+    if (checksum == body[-1]):
+        return True;
+    else: return False;
 class listen_class:
     def __init__(self, listenList):
         self.messageList = listenList
