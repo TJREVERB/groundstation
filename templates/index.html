@@ -16,13 +16,26 @@
                 <label for="args">Arguments:</label><input type="text" name="args" /><br />
             </form>
             <button onclick="send()">Submit</button>
+            <ul id="t-send"></ul>
         </div>
         <div id="d-listen">
             <h1>Listen</h1>
-            <ul id="t-listen"></ul>
+            <ul id="t-listen">
+            </ul>
         </div>
     </div>
     <script>
+        var failedMes;
+        function getFailed() {
+            url = '/failed'
+            fetch(url)
+                .then(res => res.json())
+                .then(req => {
+                    //ul.appendChild("hi"_);
+                    print("hi");
+                    failedMes = JSON.parse(JSON.stringify(req));
+                })
+            }
         function listen() {
             url = '/listen';
             fetch(url)
@@ -36,10 +49,15 @@
                         var jsonArray = JSON.parse(JSON.stringify(req));
                         //console.log(jsonArray);
                         //jsonArray.forEach(element => console.log(element));
-                        jsonArray.forEach(function(item) {
-                            li.appendChild(document.createTextNode(item) );
+                        var i = 0;
+                        jsonArray.forEach(function (item) {
+                            if(i in failedMes) {
+                                alert("A message is incorrect: " + item)
+                            }
+                            li.appendChild(document.createTextNode(item));
                             ul.appendChild(li);
                             li = document.createElement("li");
+                            i+=1;
                         });
                         //jsonArray.forEach(element => li.appendChild(document.createTextNode(element + "\n")));
                         //li.appendChild(document.createTextNode("Four"));
@@ -52,7 +70,9 @@
                 });
         }
         setInterval(listen, 2500);
-
+        function getMessage(mod, method, argList) {
+            return mod + method + argList.split(',');
+        }
         function send() {
             let form = new FormData(document.getElementById('form'));
             const url = '/send';
@@ -73,7 +93,14 @@
             fetch(request)
                 .then(function (res) {
                     // Handle response we get from the API
+                    console.log(JSON.stringify(res));
                     console.log(res);
+                    console.log(request);
+                    var ul = document.getElementById('t-send');
+                    var li = document.createElement("li");
+                    li.appendChild(document.createTextNode(JSON.stringify(res)) );
+                    ul.appendChild(li);
+                    request
                 })
                 .catch(function (err) {
                     console.log(err);
