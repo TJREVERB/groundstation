@@ -1,9 +1,13 @@
 from flask import Flask, request, jsonify, render_template
 from threading import Thread
+import logging
 import functions
 
 app = Flask(__name__)
+log = logging.getLogger('werkzeug')
+log.disabled = True
 message = []
+failed_msg = [] #list of every message that has an incorrect checksum
 @app.route("/send", methods=["POST"])
 def handle_send():
     module, method, args = request.json["module"], request.json["method"], request.json["args"]
@@ -26,9 +30,14 @@ def send():
 @app.route("/listen", methods=['GET'])
 def listen():
     listen_list = myobject.get_list()
+    #checks if all elements of listen_list have correct checksum
+    #if an element has incorrect checksum, add it to failed_msg
     myobject.reset_list()
     return jsonify(listen_list)
 
+#checksum method
+#returns all elements of failed_msg
+#clears failed_msg
 if __name__ == '__main__':
     '''t1 = Thread(target = listen_thread, args = ())
     t1.daemon = True

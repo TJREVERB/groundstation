@@ -10,5 +10,10 @@ db = firestore.client()
 doc_ref = db.collection(u'users').document(u'cubesat')
 doc_ref.set({
     u'cubesat' : u'honorcode',
-    u'year' : 2020,
-})Lovelace
+    u'year2' : 2022,
+})
+timestamp = "1/16 6:30"
+city_ref = db.collection(u'users').document(u'cubesat')
+city_ref.update({
+    timestamp : 2020,
+})

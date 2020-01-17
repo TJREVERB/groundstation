@@ -4,6 +4,10 @@ import time
 # import sys
 import socket
 import datetime
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+#logging.basicConfig(filename='event_log.log',level=logging.DEBUG)
 messageList = []
 '''
     SEND MESSAGE:
@@ -13,7 +17,10 @@ messageList = []
     send
     '''
 # import subprocess
+cred = credentials.Certificate("groundstation-listen-log-firebase-adminsdk-h2jfr-9d71ce0bdb.json")
+firebase_admin.initialize_app(cred)
 
+db = firestore.client()
 tx_port = 5555
 udp_ip = "127.0.0.1"
 
@@ -69,8 +76,8 @@ def get_time():  # get_time()
     return (st)
 
 
-def get_logger():
-    return (logging.getLogger("CI"))
+#def get_logger():
+    #return (logging.getLogger("CI"))
 
 
 def print_arg(list):
@@ -90,8 +97,8 @@ def generate_checksum(body: str):
     sum1 = sum([ord(x) for x in body[0:-7]])
     sum1 %= 26
     sum1 += 65
-    logger = get_logger()
-    logger.debug('CHECKOUT :' + chr(sum1) + ";")
+    #logger = get_logger()
+    #logger.debug('CHECKOUT :' + chr(sum1) + ";")
     return chr(sum1)
 
 
@@ -125,110 +132,26 @@ class listen_class:
             msg_lstn.bind((UDP_IP, RX_PORT))
             ack, addr = msg_lstn.recvfrom(1024)
             #print (ack)
-            time.sleep(1)
-            # REDUDANCY CHECK
+            #time.sleep(1)
+            #REDUDANCY CHECK
             if "to SATT4" in str(ack):
                 # getTime()
                 print("RX: ", end="")
                 print(ack)
                 self.messageList.append(ack)
+                timestamp = get_time()
+                city_ref = db.collection(u'Log').document(u'Listen')
+                city_ref.update({
+                    timestamp : ack,
+                })
+            checksum = generate_checksum(ack)
+            time.sleep(1)
+            #self.messageList.append(ack)
                 # return(str(ack))
             #print ("RX: " + get_time(), end="")
             #print (ack)
             # print(ack)
             # self.messageList.append(ack)
-
-
-'''def listen_list():
-    if(len(messageList) > 0):
-        print(messageList[-1])
-        return messageList[-1]#returns last item
-    else:
-        return("No message")
-
-def start_listen():
-    t1 = Thread(target = listen, args = ())
-    t1.daemon = True
-    t1.start()
-    t2 = Thread(target=get_listen_message, args = ())
-    t2.daemon = True
-    t2.start()
-
-def listen():
-    global messageList
-    UDP_IP = "127.0.0.1"
-    RX_PORT = 5557
-    msg_lstn = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
-    msg_lstn.bind((UDP_IP, RX_PORT))
-    ack, addr = msg_lstn.recvfrom(1024)
-    #print (ack)
-    time.sleep(1)
-    #if redundancyCheck() == False:
-    if "to SATT4" in str(ack):
-        #getTime()
-        print ("RX: ", end="")
-        print (ack)
-        messageList.append(ack)
-        return(str(ack))
-    else:
-        return None
-    #print ("RX: " + get_time(), end="")
-    #print (ack)
-    print(ack)
-    messageList.append(ack)
-    print(str(len(messageList)) + " Is the len")
-    #return(str(ack))
-        #listen_txt = open("listen.txt","w")
-        #listen_txt.truncate(0)
-        #listen_txt.write(str(ack))
-        #listen_txt.close()
-        #ack = None
-
-def listen_test():
-    global messageList
-    global message
-    message = ""
-    message = input("Enter message")
-    messageList.append(message)
-    if(message != ""):
-        messageList.append(message)
-        return(message)
-    else:
-        return None
-    
-    UDP_IP = "127.0.0.1"
-    RX_PORT = 5557
-    msg_lstn = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
-    msg_lstn.bind((UDP_IP, RX_PORT))
-    ack, addr = msg_lstn.recvfrom(1024)
-    #print (ack)
-    time.sleep(1)
-    #if redundancyCheck() == False:
-    if "to SATT4" in str(ack):
-        #getTime()
-        print ("RX: ", end="")
-        print (ack)
-        messageList.append(ack)
-        return(str(ack))
-    else:
-        return None
-        #listen_txt = open("listen.txt","w")
-        #listen_txt.truncate(0)
-        #listen_txt.write(str(ack))
-        #listen_txt.close()
-        #ack = None
-
-def get_listen_message():
-    print(message)
-    if(message != ""):
-        return message
-    else:
-        return "No message"
-
-#Thread(target=listen, daemon=True).start()
-'''
-
-
 def in_module(module):
     # get_time()
     # submod = input("UI: Which Module?\n")
@@ -341,14 +264,22 @@ def get_message(module, method, argList):
 
 
 def send(module, method, argList):  # ASSUMES EVERYTHING HAS BEEN CHECKED
+    #logging.debug("log working")
+    log = open("event_log.log", "a")
     checksum = generate_checksum(
         'TJ' + module + ',' + method + ',' + print_arg(argList))
     msg = "TJ" + module + "," + method + "," + print_arg(argList) + checksum
     try:  # Message successfully sent
         msg_snd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         msg_snd.sendto(msg.encode(), (udp_ip, tx_port))
-
+        #log.write(msg)
+        city_ref = db.collection(u'Log').document(u'Send')
+        timestamp = get_time()
+        city_ref.update({
+            timestamp : msg,
+        })
         return True
     except:
+        log.write("ERROR: MESSAGE FAILED TO SEND. MESSAGE: " + msg)
         return False
 # listen_list()
