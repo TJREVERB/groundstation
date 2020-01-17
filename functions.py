@@ -269,15 +269,12 @@ def get_message(module, method, argList):
 
 
 def send(module, method, argList):  # ASSUMES EVERYTHING HAS BEEN CHECKED
-    #logging.debug("log working")
     log = open("event_log.log", "a")
-    checksum = generate_checksum(
-        'TJ' + module + ',' + method + ',' + print_arg(argList))
+    checksum = generate_checksum('TJ' + module + ',' + method + ',' + print_arg(argList))
     msg = "TJ" + module + "," + method + "," + print_arg(argList) + checksum
     try:  # Message successfully sent
         msg_snd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         msg_snd.sendto(msg.encode(), (udp_ip, tx_port))
-        #log.write(msg)
         city_ref = db.collection(u'Log').document(u'Send')
         timestamp = get_time()
         city_ref.update({
@@ -287,4 +284,3 @@ def send(module, method, argList):  # ASSUMES EVERYTHING HAS BEEN CHECKED
     except:
         log.write("ERROR: MESSAGE FAILED TO SEND. MESSAGE: " + msg)
         return False
-# listen_list()
