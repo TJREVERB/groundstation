@@ -20,11 +20,12 @@
         </div>
         <div id="d-listen">
             <h1>Listen</h1>
-            <ul id="t-listen">
-            </ul>
+            <ul id="t-listen"></ul>
         </div>
     </div>
+
     <script>
+        /*
         var failedMes;
         function getFailed() {
             url = '/failed'
@@ -34,14 +35,13 @@
                     //ul.appendChild("hi"_);
                     failedMes = JSON.parse(JSON.stringify(req));
                 })
-            }
+        }*/
         function listen() {
             //getFailed();
             url = '/listen';
             fetch(url)
                 .then(res => res.json())
                 .then(req => {
-                    //ul.appendChild("hi"_);
                     if (JSON.stringify(req) != '[]') {
                         //alert("hi")
                         var ul = document.getElementById('t-listen');
@@ -49,15 +49,15 @@
                         var jsonArray = JSON.parse(JSON.stringify(req));
                         //console.log(jsonArray);
                         //jsonArray.forEach(element => console.log(element));
-                        var i = 0;
+                        //var i = 0;
                         jsonArray.forEach(function (item) {
-                            if(i in failedMes) {
+                            /*if (i in failedMes) {
                                 alert("A message is incorrect: " + item)
-                            }
+                            }*/
                             li.appendChild(document.createTextNode(item));
                             ul.appendChild(li);
                             li = document.createElement("li");
-                            i+=1;
+                            //i += 1;
                         });
                         //jsonArray.forEach(element => li.appendChild(document.createTextNode(element + "\n")));
                         //li.appendChild(document.createTextNode("Four"));
@@ -104,6 +104,7 @@
                 })
                 .catch(function (err) {
                     console.log(err);
+                    alert("Message not sent");
                 });
         }
     </script>
