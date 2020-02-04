@@ -1,17 +1,17 @@
 from flask import Flask, request, jsonify, render_template
-from threading import Thread
-import logging
-import functions
+import send
+import listen as lsn
 
 app = Flask(__name__)
-message = []
-failed_msg = [] #list of every message that has an incorrect checksum
 @app.route("/send", methods=["POST"])
 def handle_send():
+    """
+    Requests the module, method, and args from the front end
+    Makes a request to the back end to send message
+    """
     module, method, args = request.json["module"], request.json["method"], request.json["args"]
-    print(module, method, args)
-    if(functions.in_module(module) and functions.in_method(module, method) and functions.check_args(module, method, args)):
-        result = functions.send(module, method, args)
+    if(send.in_module(module) and send.in_method(module, method) and send.check_args(module, method, args)):
+        result = send.send(module, method, args)
         if result:
             return "message successfully sent", 200
         else:
@@ -23,23 +23,21 @@ def handle_send():
 def template():
     return render_template("index.html")
 
-
 @app.route("/listen", methods=['GET'])
 def listen():
-    listen_list = listenObject.get_list()
-    #for i in listen_list:
-        #if (listen_list[i].check_checksum is not True):
-            #failed_msg.append(i)
-    listenObject.reset_list()
-    return jsonify(listen_list)
-
-@app.route("/failed", methods=['GET'])
-def checksum():
-    return_list = failed_msg
-    failed_msg.clear()
-    return return_list
+    """
+    Requests the listened messages from the backend
+    Returns list of listened messages
+    """
+    listen_list = listen_object.get_list()
+    listen_object.reset_list()
+    return jsonify(listen_list), 200
 
 if __name__ == '__main__':
-    listenObject = functions.listen_class([])
-    listenObject.start_listen()
+    """
+    Creates objcet of listen class and starts the listen thread
+    Runs app
+    """
+    listen_object = lsn.listen_class([])
+    listen_object.start_listen_thread()
     app.run()
