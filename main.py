@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, render_template
 import send
-import listen as lsn
+from listen import Listen
 
 app = Flask(__name__)
 @app.route("/send", methods=["POST"])
@@ -19,9 +19,11 @@ def handle_send():
     else:
         return "incorrect parameters", 405
 
+
 @app.route("/")
 def template():
     return render_template("index.html")
+
 
 @app.route("/listen", methods=['GET'])
 def listen():
@@ -33,11 +35,12 @@ def listen():
     listen_object.reset_list()
     return jsonify(listen_list), 200
 
+
 if __name__ == '__main__':
     """
     Creates objcet of listen class and starts the listen thread
     Runs app
     """
-    listen_object = lsn.listen_class([])
-    listen_object.start_listen_thread()
+    listen_object = Listen([])
+    listen_object.start_thread()
     app.run()

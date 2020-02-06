@@ -46,6 +46,7 @@ submodules = {
     '_init_': _init_
 }
 
+
 def generate_checksum(body: str):
     """
     Given a message body, generate its checksum
@@ -58,6 +59,7 @@ def generate_checksum(body: str):
     sum1 += 65
     return chr(sum1)
 
+
 def in_module(module):
     """
     Checks if module is valid module
@@ -66,6 +68,7 @@ def in_module(module):
         return True
     return False
 
+
 def in_method(submod, method):
     """
     Checks if method is in module
@@ -73,6 +76,7 @@ def in_method(submod, method):
     if (method in submodules[submod]):
         return True
     return False
+
 
 def check_args(module, method, argList):
     """
@@ -101,14 +105,16 @@ def check_args(module, method, argList):
         elif (i == "char"):
             if ((charVal.isalpha() == True and len(charVal) <= 1) == False):
                 return False
-        count+=1
+        count += 1
     return (True)
 
-def send(module, method, argList):  # ASSUMES EVERYTHING HAS BEEN CHECKED
+
+def send(module, method, argList):
     """
     Assumes all methods have been checked and are valid
     Generates messege based on module, method, argList
     Sends the message using sockets
+    Assume everything has been checked
     """
     tx_port = 5555
     udp_ip = "127.0.0.1"
@@ -121,11 +127,6 @@ def send(module, method, argList):  # ASSUMES EVERYTHING HAS BEEN CHECKED
     try:  # Message successfully sent
         msg_snd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         msg_snd.sendto(msg.encode(), (udp_ip, tx_port))
-        #city_ref = db.collection(u'Log').document(u'Send')#
-        #timestamp = get_time()
-        #city_ref.update({#
-            #timestamp : msg,#
-        #})#
         return True
     except:
         return False
