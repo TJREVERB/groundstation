@@ -1,29 +1,32 @@
 from threading import Thread
 import socket
 
-class listen_class:
+
+class Listen:
     """
     Listen class used as object in main.py 
     Allows for threading to listen
     Returns all messages received
     """
+
     def __init__(self, listen_list):
         self.message_list = listen_list
-    
+
     def get_list(self):
         return self.message_list
-    
+
     def reset_list(self):
         self.message_list = []
-    def start_listen_thread(self):
+
+    def start_thread(self):
         """
         Starts a thread to listen for new messages
         """
-        listen_thread = Thread(target=self.listen, args=())
+        listen_thread = Thread(target=self.run, args=())
         listen_thread.daemon = True
         listen_thread.start()
-        
-    def listen(self):
+
+    def run(self):
         """
         Thread that continiously listens for new messages using sockets
         Adds the received message to the message list
