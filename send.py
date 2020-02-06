@@ -99,7 +99,7 @@ def check_args(module, method, argList):
             except ValueError:
                 return False
         elif (i == "char"):
-            if ((charVal.isalpha() == True and len(charVal) <= 1) == False):
+            if ((param.isalpha() == True and len(param) <= 1) == False):
                 return False
         count+=1
     return (True)
@@ -112,20 +112,16 @@ def send(module, method, argList):  # ASSUMES EVERYTHING HAS BEEN CHECKED
     """
     tx_port = 5555
     udp_ip = "127.0.0.1"
-    no_checksum_msg = 'TJ' + module + ',' + method + ','
+    no_checksum_msg = 'TJ:C;' + module + ';' + method + ';'
     for i in range(len(argList)-1):
-        no_checksum_msg += str(arg) + ","
+        no_checksum_msg += str(argList[i]) + ";"
     no_checksum_msg += str(argList[-1])
-    checksum = generate_checksum(no_checksum_msg)
-    msg = no_checksum_msg + checksum
+    #checksum = generate_checksum(no_checksum_msg)
+    #msg = no_checksum_msg + checksum
+    msg = no_checksum_msg
     try:  # Message successfully sent
         msg_snd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         msg_snd.sendto(msg.encode(), (udp_ip, tx_port))
-        #city_ref = db.collection(u'Log').document(u'Send')#
-        #timestamp = get_time()
-        #city_ref.update({#
-            #timestamp : msg,#
-        #})#
         return True
     except:
         return False
