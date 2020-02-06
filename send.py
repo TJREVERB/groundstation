@@ -110,6 +110,8 @@ def send(module, method, argList):  # ASSUMES EVERYTHING HAS BEEN CHECKED
     Generates messege based on module, method, argList
     Sends the message using sockets
     """
+    tx_port = 5555
+    udp_ip = "127.0.0.1"
     no_checksum_msg = 'TJ' + module + ',' + method + ','
     for i in range(len(argList)-1):
         no_checksum_msg += str(arg) + ","
