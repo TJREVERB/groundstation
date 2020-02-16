@@ -6,9 +6,9 @@ from groundstation.validations import validate
 class GroundStation(Database):
 
     def __init__(self, database_credentials: str, database_url: str, receive_path: str, dispatch_path: str):
-        super().__init__(database_credentials, database_url, self.on_update)
         self.receive_path = receive_path
         self.dispatch_path = dispatch_path
+        super().__init__(database_credentials, database_url, self.on_update)
         self.received = self.reference.child(receive_path)
         self.sent = self.reference.child(dispatch_path)
 
