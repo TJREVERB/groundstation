@@ -12,5 +12,8 @@ class Database:
     def read(self, path):
         return self.reference.child(path).get()
 
+    def add_child(self, path, json):
+        return self.reference.child(path).push(json)
+
 
 update_event = firebase_admin.db.Event
