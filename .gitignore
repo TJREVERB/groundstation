@@ -1,0 +1,5 @@
+service_account_key.json
+.idea/
+venv/
+.vscode/
+__pycache__/
