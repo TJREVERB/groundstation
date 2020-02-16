@@ -15,11 +15,11 @@ class GroundStation(Database):
     def get_all_received(self):
         return self.received.get()
 
-    def get_all_sent(self):
+    def get_all_dispatched(self):
         return self.sent.get()
 
     @validate(schema='received', position=3)
-    def add_new_received(self, message_type: ReceivedType, timestamp: int or str, data: dict):
+    def add_new_received(self, message_type: ReceivedType, timestamp: int, data: dict):
         self.received.child(message_type.value).child(f"{timestamp}").set(data)
 
     def on_update(self, event: update_event):
