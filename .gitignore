@@ -3,3 +3,4 @@ service_account_key.json
 venv/
 .vscode/
 __pycache__/
+Pipfile.lock
