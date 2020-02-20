@@ -8,14 +8,10 @@ class APRS:
     Returns all messages received
     """
 
-    def __init__(self, listen_list):
-        self.message_list = listen_list
+    def __init__(self, call_back: callable):
+        self.callback = call_back
+        self.start_thread()
 
-    def get_list(self):
-        return self.message_list
-
-    def reset_list(self):
-        self.message_list = []
 
     def start_thread(self):
         """
@@ -38,7 +34,7 @@ class APRS:
             msg_lstn.bind((UDP_ID, RX_PORT))
             message_received = msg_lstn.recvfrom(1024)
             if "to SATT4" in str(message_received):
-                self.message_list.append(message_received)
+                self.callback(message_received)
 
 
 #class Iridium:
