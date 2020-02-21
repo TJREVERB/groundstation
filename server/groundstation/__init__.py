@@ -1,7 +1,7 @@
 from time import time
 from firebase import Database, update_event
-from types import ReceivedType
-from validmessage_receivedtions import validate
+from groundstation.types import ReceivedType
+from groundstation.validations import validate_json
 from radios import APRS
 
 
@@ -22,7 +22,7 @@ class GroundStation(Database):
     def get_all_dispatched(self):
         return self.sent.get()
 
-    @validate(schema='received', position=3)
+    @validate_json(schema='received', position=3)
     def add_new_received(self, message_type: ReceivedType, timestamp: int, data: dict):
         self.received.child(message_type.value).child(f"{timestamp}").set(data)
 
@@ -34,8 +34,8 @@ class GroundStation(Database):
 
     def on_aprs_receive(self, m):
         if m.startswith('TJ:B'):
-            self.add_new_received(ReceivedType.Beacon, int(time()), {"message": m, "sat_time": int(time())})
+            self.add_new_received(ReceivedType.Beacon, int(time()), {"message": m, "sat_time": str(int(time()))})
         elif m.startswith('TJ:E'):
-            self.add_new_received(ReceivedType.Echo, int(time()), {"message": m, "sat_time": int(time())})
+            self.add_new_received(ReceivedType.Echo, int(time()), {"message": m, "sat_time": str(int(time()))})
         elif m.startswith('TJ:D'):
-            self.add_new_received(ReceivedType.Dump, int(time()), {"message": m, "sat_time": int(time())})
+            self.add_new_received(ReceivedType.Dump, int(time()), {"message": m, "sat_time": str(int(time()))})

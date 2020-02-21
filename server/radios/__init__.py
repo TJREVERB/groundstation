@@ -1,18 +1,19 @@
-from threading import Thread
 import socket
 import base64
 import json
 import mimetypes
 import datetime
+import pickle
+
+from os import path
+from threading import Thread
 from pytz import timezone
-from email import message_from_string
-from email import encoders
+
+from email import message_from_string, encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from os import path
-import pickle
-import os.path
+
 from googleapiclient.discovery import build
 from googleapiclient import errors
 from google_auth_oauthlib.flow import InstalledAppFlow
