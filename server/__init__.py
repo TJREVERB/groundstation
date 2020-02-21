@@ -1,6 +1,8 @@
+from time import time
 from firebase import Database, update_event
-from groundstation.types import ReceivedType
-from groundstation.validations import validate
+from types import ReceivedType
+from validmessage_receivedtions import validate
+from radios import APRS
 
 
 class GroundStation(Database):
@@ -11,8 +13,10 @@ class GroundStation(Database):
         super().__init__(database_credentials, database_url, self.on_update)
         self.received = self.reference.child(receive_path)
         self.sent = self.reference.child(dispatch_path)
+        self.aprs = APRS(self.on_aprs_receive)
 
     def get_all_received(self):
+        #self.received = self.aprs.get_list()
         return self.received.get()
 
     def get_all_dispatched(self):
@@ -27,3 +31,11 @@ class GroundStation(Database):
             print(f"New Received: {event.data}")
         elif self.dispatch_path in event.path:
             print(f"New Dispatched: {event.data}")
+
+    def on_aprs_receive(self, m):
+        if m.startswith('TJ:B'):
+            self.add_new_received(ReceivedType.Beacon, int(time()), {"message": m, "sat_time": int(time())})
+        elif m.startswith('TJ:E'):
+            self.add_new_received(ReceivedType.Echo, int(time()), {"message": m, "sat_time": int(time())})
+        elif m.startswith('TJ:D'):
+            self.add_new_received(ReceivedType.Dump, int(time()), {"message": m, "sat_time": int(time())})
