@@ -14,7 +14,7 @@ schemas = {
 }
 
 
-def validate(schema, position=0):
+def validate_json(schema, position=0):
     def decorator(function):
         @wraps(function)
         def wrapper(*args, **kwargs):
