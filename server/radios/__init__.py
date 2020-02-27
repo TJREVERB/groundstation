@@ -5,7 +5,7 @@ import mimetypes
 import datetime
 import pickle
 
-from os import path
+import os
 from threading import Thread
 from pytz import timezone
 
@@ -19,6 +19,7 @@ from googleapiclient import errors
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
+
 class APRS:
     """
     Listen class used as object in main.py 
@@ -29,7 +30,6 @@ class APRS:
     def __init__(self, call_back: callable):
         self.callback = call_back
         self.start_thread()
-
 
     def start_thread(self):
         """
@@ -55,11 +55,10 @@ class APRS:
                 self.callback(message_received)
 
 
-
 class Iridium:
     def __init__(self):
         self.SCOPES = ['https://www.googleapis.com/auth/gmail.send',
-                'https://www.googleapis.com/auth/gmail.modify']
+                       'https://www.googleapis.com/auth/gmail.modify']
         self.SECRETS_FILENAME = "credentials.json"
         self.SECRETS_FILENAME_ENCRYPTED = "credentials.json.gpg"
         self.IMEI = None
@@ -72,15 +71,13 @@ class Iridium:
         self.MAIL_RECEIVE = "sbdservice@sbd.iridium.com"
         self.MAIL_RECEIVE_SUBJECT = "SBD Msg From Unit: "
 
-
     def check_secrets_exists(self) -> bool:
-        if path.exists(self.SECRETS_FILENAME):
+        if os.path.exists(self.SECRETS_FILENAME):
             return True
-        elif path.exists(self.SECRETS_FILENAME_ENCRYPTED):
+        elif os.path.exists(self.SECRETS_FILENAME_ENCRYPTED):
             return False
         else:
             return False
-
 
     def get_imei(self) -> int:
         if self.check_secrets_exists():
@@ -90,7 +87,6 @@ class Iridium:
             imei = data["imei"]
 
             return imei
-
 
     def get_service(self):
         creds = None
@@ -116,7 +112,6 @@ class Iridium:
 
         return service
 
-
     def main(self):
         """
         Needs to be maanually required
@@ -124,7 +119,6 @@ class Iridium:
         #global IMEI, MAIL_RECEIVE_SUBJECT
         self.IMEI = self.get_imei()
         self.MAIL_RECEIVE_SUBJECT += str(self.IMEI)
-
 
     def send(self, use_msg, use_file, body):
         service = self.get_service()
@@ -143,7 +137,6 @@ class Iridium:
             self.create_msg_file(body)
             self.send_mail(self.MSG_FILENAME_DEFAULT, service)
             self.delete_msg_file()
-
 
     def send_mail(self, msg_filename, service):
         message = MIMEMultipart()
@@ -177,11 +170,10 @@ class Iridium:
 
         try:
             message = (service.users().messages().self.send(userId=self.MAIL_FROM, body=message_encoded)
-                    .execute())
+                       .execute())
             return message
         except errors.HttpError as error:
             return
-
 
     def create_msg_file(self, msg):
         self.delete_msg_file()
@@ -189,31 +181,32 @@ class Iridium:
         msg_file.write(msg)
         msg_file.close()
 
-
     def delete_msg_file(self):
         if os.path.exists(self.MSG_FILENAME_DEFAULT):
             os.remove(self.MSG_FILENAME_DEFAULT)
         else:
-            return  # error 
-
+            return  # error
 
     def receive(self, num_msgs):
         service = self.get_service()
         query = "from:" + self.MAIL_RECEIVE + " " \
                 + "subject:" + self.MAIL_RECEIVE_SUBJECT + " " \
                 + "has:attachment"
-        messages = self.receive_msg_list(service, self.MAIL_FROM, num_msgs, query)
+        messages = self.receive_msg_list(
+            service, self.MAIL_FROM, num_msgs, query)
 
         for message in messages:
-            msg_body = str(self.receive_msg_body(service, self.MAIL_FROM, message["id"]))
-            msg_decoded = self.receive_msg_attach(service, self.MAIL_FROM, message["id"], "")
+            msg_body = str(self.receive_msg_body(
+                service, self.MAIL_FROM, message["id"]))
+            msg_decoded = self.receive_msg_attach(
+                service, self.MAIL_FROM, message["id"], "")
             if msg_decoded is not None or msg_decoded:
                 """
                 replace print with something meaningful
                 """
-                print(self.get_msg_send_date(msg_body).strftime("%c"), fg="cyan")
+                print(self.get_msg_send_date(
+                    msg_body).strftime("%c"))
                 print(msg_decoded)
-
 
     def receive_msg_list(self, service, user_id, max_results, query=''):
         """List all Messages of the user's mailbox matching the query.
@@ -233,8 +226,8 @@ class Iridium:
 
         try:
             response = service.users().messages().list(userId=user_id,
-                                                    q=query,
-                                                    maxResults=max_results).execute()
+                                                       q=query,
+                                                       maxResults=max_results).execute()
             messages = []
 
             if 'messages' in response:
@@ -243,7 +236,7 @@ class Iridium:
             while 'nextPageToken' in response:
                 page_token = response['nextPageToken']
                 response = service.users().messages().list(userId=user_id, q=query,
-                                                        pageToken=page_token).execute()
+                                                           pageToken=page_token).execute()
                 messages.extend(response['messages'])
 
             return messages[:max_results]
@@ -251,8 +244,7 @@ class Iridium:
         except errors.HttpError as error:
             return  # error
 
-
-    def receive_msg_body(self, ervice, user_id, msg_id):
+    def receive_msg_body(self, service, user_id, msg_id):
         """Get a Message and use it to create a MIME Message.
 
         Args:
@@ -267,7 +259,7 @@ class Iridium:
 
         try:
             message = service.users().messages().get(userId=user_id, id=msg_id,
-                                                    format='raw').execute()
+                                                     format='raw').execute()
 
             msg_str = base64.urlsafe_b64decode(message['raw'].encode('ASCII'))
 
@@ -277,7 +269,6 @@ class Iridium:
 
         except errors.HttpError as error:
             print(error)
-
 
     def receive_msg_attach(self, service, user_id, msg_id, store_dir="msg", save=False):
         """Get and store attachment from Message with given id.
@@ -299,16 +290,17 @@ class Iridium:
                     else:
                         attach_id = part['body']['attachmentId']
                         attach = service.users().messages().attachments().get(userId=user_id, messageId=msg_id,
-                                                                            id=attach_id).execute()
+                                                                              id=attach_id).execute()
                         attach_data = attach['data']
 
                     file_data = base64.urlsafe_b64decode(attach_data
-                                                        .encode('UTF-8'))
+                                                         .encode('UTF-8'))
 
                     file_decoded_msg = file_data.decode()
 
                     if save:
-                        file_local_path = ''.join([store_dir, part['filename']])
+                        file_local_path = ''.join(
+                            [store_dir, part['filename']])
 
                         f = open(file_local_path, 'w')
                         f.write(file_decoded_msg)
@@ -318,8 +310,6 @@ class Iridium:
 
         except errors.HttpError as error:
             print(error)
-            
-
 
     def get_msg_send_date(self, msg_body) -> datetime.datetime:
         date = ""
