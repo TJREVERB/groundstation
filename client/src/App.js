@@ -2,7 +2,11 @@ import React from 'react';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from 'firebase';
 
-const config = {};
+
+const config = {
+    apiKey: process.env.API_KEY,
+    authDomain: 'localhost:3000'
+};
 firebase.initializeApp(config);
 
 const uiConfig = {
