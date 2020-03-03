@@ -31,6 +31,7 @@ class GroundStation(Database):
             print(f"New Received: {event.data}")
         elif self.dispatch_path in event.path:
             print(f"New Dispatched: {event.data}")
+            #self.aprs.send(str(event.data)) <- Is this correct to send message?
 
     def on_aprs_receive(self, m):
         if m.startswith('TJ:B'):
