@@ -86,7 +86,8 @@ class Iridium:
 
         self.MAIL_RECEIVE = "sbdservice@sbd.iridium.com"
         self.MAIL_RECEIVE_SUBJECT = "SBD Msg From Unit: "
-
+        #start listen thread
+        
     def check_secrets_exists(self) -> bool:
         if os.path.exists(self.SECRETS_FILENAME):
             return True
