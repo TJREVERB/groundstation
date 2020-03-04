@@ -86,7 +86,8 @@ class Iridium:
 
         self.MAIL_RECEIVE = "sbdservice@sbd.iridium.com"
         self.MAIL_RECEIVE_SUBJECT = "SBD Msg From Unit: "
-        #start listen thread
+        self.main()
+        self.run()  # start listen thread
         
     def check_secrets_exists(self) -> bool:
         if os.path.exists(self.SECRETS_FILENAME):
@@ -204,13 +205,13 @@ class Iridium:
         else:
             return  # error
 
-    def receive(self, num_msgs):
+    def receive(self):
         service = self.get_service()
         query = "from:" + self.MAIL_RECEIVE + " " \
                 + "subject:" + self.MAIL_RECEIVE_SUBJECT + " " \
                 + "has:attachment"
-        messages = self.receive_msg_list(
-            service, self.MAIL_FROM, num_msgs, query)
+        messages = self.get_unread_msg(
+            service, self.MAIL_FROM, query)
 
         for message in messages:
             msg_body = str(self.receive_msg_body(
@@ -224,7 +225,47 @@ class Iridium:
                 print(self.get_msg_send_date(
                     msg_body).strftime("%c"))
                 print(msg_decoded)
+                
+    def run(self):
+        """
+        Starts a thread to listen for new messages
+        """
+        listen_thread = Thread(target=self.receive(), args=())
+        listen_thread.daemon = True
+        listen_thread.start()
+        
+    def get_unread_msg(self, service, user_id, query=''):
+        """
+        List all unread messages
+        Args:
+            service: Authorized Gmail API service instance.
+            user_id: User's email address. The special value "me"
+            can be used to indicate the authenticated user.
+            query: String used to filter messages returned.
+            Eg.- 'from:user@some_domain.com' for Messages from a particular sender.
+        Returns:
+            List of UNREAD Messages that match the criteria of the query. Note that the
+            returned list contains Message IDs, you must use get with the
+            appropriate ID to get the details of a Message.
+        """
+        try:
+            response = service.users().messages().list(userId=user_id, labelIDS=['UNREAD'], q=query).execute()
+            messages = []
 
+            if 'messages' in response:
+                messages.extend(response['messages'])
+
+            while 'nextPageToken' in response:
+                page_token = response['nextPageToken']
+                response = service.users().messages().list(userId=user_id, q=query,
+                                                           pageToken=page_token).execute()
+                messages.extend(response['messages'])
+
+            return messages
+
+        except errors.HttpError as error:
+            return  # error
+        
     def receive_msg_list(self, service, user_id, max_results, query=''):
         """List all Messages of the user's mailbox matching the query.
 
