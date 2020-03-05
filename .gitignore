@@ -4,3 +4,5 @@ venv/
 .vscode/
 __pycache__/
 Pipfile.lock
+server/groundstation-ecf9f-firebase-adminsdk-bno6f-e659943531.json
+

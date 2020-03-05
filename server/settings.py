@@ -1,2 +1,2 @@
-CREDENTIALS = 'groundstation-ecf9f-firebase-adminsdk-bno6f-e659943531.json'
+CREDENTIALS = "service_account_key.json"  # must have service_account_key.json
 DATABASE_URL = 'https://groundstation-ecf9f.firebaseio.com/'
