@@ -3,14 +3,9 @@ import 'firebase/firestore';
 
 const App = ({ firebase }) => {
     const db = firebase.firestore();
+    const messages = db.collection("inbound");
     const test = () => {
-        db.collection('inbound')
-            .get()
-            .then(querySnapshot => {
-                querySnapshot.forEach(doc => {
-                    console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
-                });
-            });
+        const newMessages = messages.orderBy('timestamp').limit(10);
     };
 
     return (
