@@ -3,9 +3,15 @@ import 'firebase/firestore';
 
 const App = ({ firebase }) => {
     const db = firebase.firestore();
-    const messages = db.collection("inbound");
+    const inbound = db.collection("inbound");
     const test = () => {
-        const newMessages = messages.orderBy('timestamp').limit(10);
+        const recentInbound = inbound.orderBy('timestamp').limit(10)
+            .get()
+            .then(query => {
+                query.forEach(doc =>
+                    console.log(doc.data())
+                )
+            })
     };
 
     return (
