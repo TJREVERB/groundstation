@@ -53,7 +53,7 @@ class APRS:
             message_received = msg_lstn.recvfrom(1024)
             if "to SATT4" in str(message_received):
                 self.callback(message_received)
-                
+
     def send(self, msg: str):
         """
         Given a message, simply generates checksum and sends message
@@ -71,7 +71,7 @@ class APRS:
             return False
 
 
-class Iridium:
+class IridiumClass:
     def __init__(self):
         self.SCOPES = ['https://www.googleapis.com/auth/gmail.send',
                        'https://www.googleapis.com/auth/gmail.modify']
@@ -88,7 +88,7 @@ class Iridium:
         self.MAIL_RECEIVE_SUBJECT = "SBD Msg From Unit: "
         self.main()
         self.run()  # start listen thread
-        
+
     def check_secrets_exists(self) -> bool:
         if os.path.exists(self.SECRETS_FILENAME):
             return True
@@ -225,7 +225,7 @@ class Iridium:
                 print(self.get_msg_send_date(
                     msg_body).strftime("%c"))
                 print(msg_decoded)
-                
+
     def run(self):
         """
         Starts a thread to listen for new messages
@@ -233,7 +233,7 @@ class Iridium:
         listen_thread = Thread(target=self.receive(), args=())
         listen_thread.daemon = True
         listen_thread.start()
-        
+
     def get_unread_msg(self, service, user_id, query=''):
         """
         List all unread messages
@@ -249,7 +249,8 @@ class Iridium:
             appropriate ID to get the details of a Message.
         """
         try:
-            response = service.users().messages().list(userId=user_id, labelIDS=['UNREAD'], q=query).execute()
+            response = service.users().messages().list(
+                userId=user_id, labelIDS=['UNREAD'], q=query).execute()
             messages = []
 
             if 'messages' in response:
@@ -265,7 +266,7 @@ class Iridium:
 
         except errors.HttpError as error:
             return  # error
-        
+
     def receive_msg_list(self, service, user_id, max_results, query=''):
         """List all Messages of the user's mailbox matching the query.
 

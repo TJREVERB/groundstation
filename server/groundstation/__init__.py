@@ -2,7 +2,7 @@ from time import time
 from firebase import Database, update_event
 from groundstation.types import ReceivedType
 from groundstation.validations import validate_json
-from radios import APRS, Iridium
+from radios import APRS, IridiumClass
 
 
 class GroundStation(Database):
@@ -31,40 +31,43 @@ class GroundStation(Database):
             print(f"New Received: {event.data}")
         elif self.dispatch_path in event.path:
             print(f"New Dispatched: {event.data}")
-            #self.aprs.send(str(event.data)) <- Is this correct to send message?
+            # self.aprs.send(str(event.data)) <- Is this correct to send message?
 
     def on_aprs_receive(self, m):
         if m.startswith('TJ:B'):
-            self.add_new_received(ReceivedType.Beacon, int(time()), {"message": m, "sat_time": str(int(time()))})
+            self.add_new_received(ReceivedType.Beacon, int(time()), {
+                                  "message": m, "sat_time": str(int(time()))})
         elif m.startswith('TJ:E'):
-            self.add_new_received(ReceivedType.Echo, int(time()), {"message": m, "sat_time": str(int(time()))})
+            self.add_new_received(ReceivedType.Echo, int(time()), {
+                                  "message": m, "sat_time": str(int(time()))})
         elif m.startswith('TJ:D'):
-            self.add_new_received(ReceivedType.Dump, int(time()), {"message": m, "sat_time": str(int(time()))})
-            
-            
+            self.add_new_received(ReceivedType.Dump, int(time()), {
+                                  "message": m, "sat_time": str(int(time()))})
+
+
 class Iridium(Database):
 
-    def __init__(self, database_credentials: str, database_url: str, receive_path: str, dispatch_path: str):
+    def __init__(self, database_credentials: str, database_url: str, receive_path: str, dispatch_path: str, name: str):
         self.receive_path = receive_path
         self.dispatch_path = dispatch_path
-        super().__init__(database_credentials, database_url, self.on_update)
+        super().__init__(database_credentials, database_url, self.on_update, name)
         self.received = self.reference.child(receive_path)
         self.sent = self.reference.child(dispatch_path)
-        self.iridium = Iridium()
-    
+        self.iridium = IridiumClass()
+
     def get_all_received(self):
         return self.received.get()
 
     def get_all_dispatched(self):
         return self.sent.get()
-    
+
     def on_update(self, event: update_event):
         if self.receive_path in event.path:
             print(f"New Received: {event.data}")
         elif self.dispatch_path in event.path:
             print(f"New Dispatched: {event.data}")
-            #self.iridium.send(str(event.data)) <- Is this correct to send message?
-            
+            # self.iridium.send(str(event.data)) <- Is this correct to send message?
+
     @validate_json(schema='received', position=3)  # change the schema?
     def add_new_received(self, message_type: ReceivedType, timestamp: int, data: dict):
         self.received.child(message_type.value).child(f"{timestamp}").set(data)
