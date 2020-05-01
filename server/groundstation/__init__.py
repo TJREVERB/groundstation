@@ -16,7 +16,6 @@ class GroundStation(Database):
         self.aprs = APRS(self.on_aprs_receive)
 
     def get_all_received(self):
-        #self.received = self.aprs.get_list()
         return self.received.get()
 
     def get_all_dispatched(self):
@@ -31,7 +30,7 @@ class GroundStation(Database):
             print(f"New Received: {event.data}")
         elif self.dispatch_path in event.path:
             print(f"New Dispatched: {event.data}")
-            # self.aprs.send(str(event.data)) <- Is this correct to send message?
+            self.aprs.send(str(event.data))
 
     def on_aprs_receive(self, m):
         if m.startswith('TJ:B'):
@@ -66,8 +65,8 @@ class Iridium(Database):
             print(f"New Received: {event.data}")
         elif self.dispatch_path in event.path:
             print(f"New Dispatched: {event.data}")
-            # self.iridium.send(str(event.data)) <- Is this correct to send message?
+            self.iridium.send(str(event.data))
 
-    @validate_json(schema='received', position=3)  # change the schema?
+    @validate_json(schema='received', position=3)
     def add_new_received(self, message_type: ReceivedType, timestamp: int, data: dict):
         self.received.child(message_type.value).child(f"{timestamp}").set(data)
