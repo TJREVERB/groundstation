@@ -14,3 +14,13 @@ def send(msg: str) -> bool:
         return True
     except:
         return False
+
+
+while(True):
+    print("Type a message in the console to be sent from the gs")
+    s = input()
+    status = send(s)
+    if(status):
+        print("Message sent: {0}".format(s))
+    else:
+        print("Something went wrong")
