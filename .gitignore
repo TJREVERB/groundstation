@@ -4,3 +4,6 @@
 
 # Cached files
 __pycache__/
+
+# Credentials
+credentials/*
