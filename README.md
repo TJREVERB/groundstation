@@ -1,4 +1,5 @@
 # Ground Station
 
-Ground station software for TJREVERB. 
-Written using Flask and HTML, using Firebase as the backend.
+Minimal ground station to test APRS.
+
+Run USRP flowgraph in the background. Run the send.py python script in one terminal to send messages. Run the listen.py python script in another terminal to receive messages.
