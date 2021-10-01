@@ -3,6 +3,8 @@ import socket
 
 def send(msg: str) -> bool:
     msg+=";" #TEMPORARY FIX TO ACCOUNT FOR GROUNDSTATION BUG: groundstation truncates last character of each message before sending
+    if not "TJ;" in msg:
+        msg = "TJ;"+msg
     """
     Takes in the message to be sent from the gs
     returns a boolean for whether the message was sent 
