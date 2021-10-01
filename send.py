@@ -20,8 +20,8 @@ def send(msg: str) -> bool:
 while(True):
     print("Type a message in the console to be sent from the gs")
     s = input()
-    if not "TJ;" in msg:
-        msg = "TJ;"+msg
+    if not "TJ;" in s:
+        s = "TJ;"+s
     status = send(s)
     if(status):
         print("Message sent: {0}".format(s))
