@@ -1,3 +1,4 @@
+# class for listening for messages for gs
 from threading import Thread
 import socket
 
