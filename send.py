@@ -1,4 +1,4 @@
-# code for send.py
+# code for send.py; modules need update
 import time
 import socket
 import datetime
