@@ -1,3 +1,4 @@
+# run this file to start up gs
 from flask import Flask, request, jsonify, render_template
 import send
 from listen import Listen
