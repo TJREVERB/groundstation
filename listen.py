@@ -2,7 +2,6 @@
 from threading import Thread
 import socket
 
-
 class Listen:
     """
     Listen class used as object in main.py 
